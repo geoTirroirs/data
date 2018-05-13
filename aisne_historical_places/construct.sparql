@@ -1,0 +1,49 @@
+Désactiver pour : anglais
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX pleiades:<https://pleiades.stoa.org/places/vocab#>
+PREFIX dct:<http://purl.org/dc/terms/>
+PREFIX change:<http://observedchange.com/tisc/ns/#>
+PREFIX geom:<http://data.ign.fr/def/geometrie#>
+
+CONSTRUCT {
+  ?s a pleiades:Place.
+  ?s pleiades:hasName ?uriName.
+  ?uriName a pleiades:Name.
+  ?uriName pleiades:during [
+   a change:Interval;
+   change:fuzzybegin "1754-01-01T00:00:00"^^xsd:dateTime;
+   change:fuzzyend "1760-01-01T00:00:00"^^xsd:dateTime
+    ].
+  ?uriName dct:bibliographicCitation "Carte générale de la France, dite carte de Cassini, ark:/12148/btv1b7711811q"^^xsd:string.
+  ?uriName pleiades:nameAttested ?nom.
+  ?s pleiades:hasLocation ?uriLoc.
+  ?uriLoc a pleiades:Location.
+  ?uriLoc dct:bibliographicCitation "Carte générale de la France, dite carte de Cassini, ark:/12148/btv1b7711811q"^^xsd:String.
+  ?uriLoc pleiades:during [
+   a change:Interval; 
+   change:fuzzybegin "1754-01-01T00:00:00"^^xsd:dateTime;
+   change:fuzzyend "1760-01-01T00:00:00"^^xsd:dateTime
+    ].  
+  ?uriLoc pleiades:hasFeatureType ?uriFT.
+  ?uriLoc geom:geometry [
+        a geom:Point;
+        geom:crs ?crs; 
+        geom:coordX ?x; 
+        geom:coordY ?y;
+        <http://www.opengis.net/ont/geosparql#asWKT> ?wkt
+    ].
+}
+WHERE{
+  ?s a pleiades:Place.
+  ?s <http://rdf.geohistoricaldata.org/id/place#nom> ?nom.
+  ?s <http://rdf.geohistoricaldata.org/id/place#_uid_> ?uid.
+  ?s <http://rdf.geohistoricaldata.org/id/place#type> ?ft.
+  ?s geom:geometry ?geom.
+  ?geom geom:crs ?crs.
+  ?geom geom:coordX ?x.
+  ?geom geom:coordY ?y.
+  ?geom <http://www.opengis.net/ont/geosparql#asWKT> ?wkt.
+  BIND (URI(concat("http://rdf.geohistoricaldata.org/id/name/",STR(?uid))) AS ?uriName).
+  BIND (URI(concat("http://rdf.geohistoricaldata.org/id/location/",STR(?uid))) AS ?uriLoc).
+  BIND (URI(concat("http://rdf.geohistoricaldata.org/id/codes/featuretype/",?ft))AS ?uriFT).
+}
